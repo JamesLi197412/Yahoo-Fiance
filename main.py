@@ -17,8 +17,8 @@ def main(stockList):
     dfexploration.df_exploration(df)
     # columns = df.columns
 
-    df = dfexploration.dateinfo(df)
-    df = dfexploration.windowLag(df,7) # set 7 days as window size
+    df = dfexploration.date_info(df)
+    df = dfexploration.window_Lag(df,7) # set 7 days as window size
     print(df.head())
 
 
@@ -28,4 +28,4 @@ if __name__ == '__main__':
     stockList = ['AAPL','IBM']
     main(stockList)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+

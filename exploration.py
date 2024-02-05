@@ -93,7 +93,7 @@ class Exploration:
         plt.tight_layout(rect=[0, 0.03, 1, 0.95])
         plt.show()
 
-    # check_adfuller
+
     def check_adfuller(self,ts):
         # Dickey-Fuller test
         result = adfuller(ts, autolag='AIC')
@@ -112,12 +112,11 @@ class Exploration:
         """
         ts = df.loc[:, ["Date",ylabel]]
         results = self.check_adfuller(ts)
-
-
-
-        return None
-
-
+        if (results[0] < 0.1 and results[1] < 0.5):
+            assumes = 'non-stationary'
+        else:
+            assumes = 'stationary'
+        return assumes
 
 
     def autocorrelation_correlation(self,df):
@@ -131,8 +130,6 @@ class Exploration:
 
         plot_acf(df['Moving AverageTotal Attendance30'], ax=plt.gca(), lags=150)
         plt.show()
-
-
 
         plot_pacf(df['Moving AverageTotal Attendance30'], ax=plt.gca(), lags=100)
         plt.show()

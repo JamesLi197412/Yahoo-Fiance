@@ -1,5 +1,5 @@
-# Author: Robert Guthrie
 
+# Attempt utilising LSTM Model
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
