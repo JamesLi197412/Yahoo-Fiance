@@ -12,9 +12,14 @@ def main(stockList):
     dfexploration = Exploration()
 
     ticker = yf.Ticker('AAPL')
-    todays_data = ticker.history(period='3Y')
+    df = ticker.history(period='3Y')
 
-    dfexploration.df_exploration(todays_data)
+    dfexploration.df_exploration(df)
+    # columns = df.columns
+
+    df = dfexploration.dateinfo(df)
+    df = dfexploration.windowLag(df,7) # set 7 days as window size
+    print(df.head())
 
 
 # Press the green button in the gutter to run the script.
