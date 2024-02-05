@@ -1,9 +1,11 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+
 import statsmodels.api as sm
 from statsmodels.tsa.seasonal import seasonal_decompose
-from pandas.plotting import autocorrelation_plot
+from statsmodels.tsa.stattools import adfuller
+from statsmodels.graphics.tsaplots import plot_pacf
 from statsmodels.graphics.tsaplots import plot_acf
 
 class Exploration:
@@ -40,7 +42,7 @@ class Exploration:
 
             print("=" * 50)
 
-    def dateinfo(self,df):
+    def date_info(self,df):
         df['Date'] = df.index
         df.Date = pd.to_datetime(df.Date, format = "%Y-%m-%d")
         df['month'] = df.Date.dt.month
@@ -51,7 +53,7 @@ class Exploration:
         return df
 
 
-    def windowLag(self,df,windowSize):
+    def window_Lag(self,df,windowSize):
         lag_features = ['Open','High','Low','Close','Volume']
         dfRolledLags =df[lag_features].rolling(window = windowSize, min_periods = 0)
 
@@ -64,7 +66,9 @@ class Exploration:
 
         df.fillna(df.mean(), inplace = True)
         df.set_index("Date", drop = False, inplace = True)
-        df.head()
+        # df.head()
+
+        return df
 
     def plot_df(df, x, y, title="", xlabel='Date', ylabel='Values', dpi=100):
         plt.figure(figsize=(15, 4), dpi=dpi)
@@ -72,17 +76,13 @@ class Exploration:
         plt.gca().set(title=title, xlabel=xlabel, ylabel=ylabel)
         plt.show()
 
-    def decomposition(self,df):
+    def decomposition(self,df,yValue, windowSize):
         # Multiplicative Decomposition
-        attendance = df.dropna()
-        multiplicative_decomposition = seasonal_decompose(df['Moving AverageTotal Attendance30'],
-                                                          model='multiplicative',
-                                                          period=30)
+        df = df.dropna()
+        multiplicative_decomposition = seasonal_decompose(df[yValue],model='multiplicative',period=windowSize)
 
         # Additive Decomposition
-        additive_decomposition = seasonal_decompose(df['Moving AverageTotal Attendance30'],
-                                                    model='additive',
-                                                    period=30)
+        additive_decomposition = seasonal_decompose(df[yValue], model='additive',period=windowSize)
 
         # Plot
         plt.rcParams.update({'figure.figsize': (16, 12)})
@@ -91,19 +91,34 @@ class Exploration:
 
         additive_decomposition.plot().suptitle('Additive Decomposition', fontsize=16)
         plt.tight_layout(rect=[0, 0.03, 1, 0.95])
-
         plt.show()
 
-    def test_stationarity(self,df):
+    # check_adfuller
+    def check_adfuller(self,ts):
+        # Dickey-Fuller test
+        result = adfuller(ts, autolag='AIC')
+        print('Test statistic: ', result[0])
+        print('p-value: ', result[1])
+        print('Critical Values:', result[4])
+
+        return result
+
+    def test_stationarity(self,df,ylabel):
         """
             Used to Test signal staionary or not
             Augmented Dickey-Fuller test
         :param df:
         :return:
         """
+        ts = df.loc[:, ["Date",ylabel]]
+        results = self.check_adfuller(ts)
+
 
 
         return None
+
+
+
 
     def autocorrelation_correlation(self,df):
         # Autocorrelation to check seasonality
@@ -117,8 +132,7 @@ class Exploration:
         plot_acf(df['Moving AverageTotal Attendance30'], ax=plt.gca(), lags=150)
         plt.show()
 
-        # loading and plotting pacf
-        from statsmodels.graphics.tsaplots import plot_pacf
+
 
         plot_pacf(df['Moving AverageTotal Attendance30'], ax=plt.gca(), lags=100)
         plt.show()
