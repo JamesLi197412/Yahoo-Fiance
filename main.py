@@ -1,18 +1,26 @@
-
-
-
+import datetime
 import yfinance as yf
-def main():
-    # create ticker for Apple Stock
-    ticker = yf.Ticker('AAPL')
-    # get data of the most recent date
-    todays_data = ticker.history(period='1d')
+from exploration import Exploration
+import warnings
+import pandas as pd
 
-    print(todays_data)
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
+def main(stockList):
+    # create ticker for Apple Stock
+
+    dfexploration = Exploration()
+
+    ticker = yf.Ticker('AAPL')
+    todays_data = ticker.history(period='3Y')
+
+    dfexploration.df_exploration(todays_data)
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    main()
+    warnings.simplefilter(action='ignore', category=FutureWarning)
+    stockList = ['AAPL','IBM']
+    main(stockList)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
