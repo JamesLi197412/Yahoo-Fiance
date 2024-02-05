@@ -3,6 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import statsmodels.api as sm
 from statsmodels.tsa.seasonal import seasonal_decompose
+from pandas.plotting import autocorrelation_plot
+from statsmodels.graphics.tsaplots import plot_acf
 
 class Exploration:
     def df_exploration(self, df):
@@ -104,8 +106,6 @@ class Exploration:
         return None
 
     def autocorrelation_correlation(self,df):
-
-
         # Autocorrelation to check seasonality
         from pandas.plotting import autocorrelation_plot
         plt.rcParams.update({'figure.figsize': (9, 5), 'figure.dpi': 120})
@@ -113,7 +113,6 @@ class Exploration:
         plt.title('Autocorrelation', fontsize=16)
         plt.plot()
 
-        from statsmodels.graphics.tsaplots import plot_acf
 
         plot_acf(df['Moving AverageTotal Attendance30'], ax=plt.gca(), lags=150)
         plt.show()
