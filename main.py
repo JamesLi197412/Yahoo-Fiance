@@ -3,7 +3,7 @@ import yfinance as yf
 from exploration import Exploration
 import warnings
 import pandas as pd
-from model.model_test import LSTMTagger
+from model.LSTM import LSTMTagger
 
 import matplotlib
 matplotlib.use('TkAgg')

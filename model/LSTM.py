@@ -8,7 +8,6 @@ import torch.optim as optim
 torch.manual_seed(1)
 
 class LSTMTagger(nn.Module):
-
     def __init__(self, embedding_dim, hidden_dim, vocab_size, tagset_size):
         super(LSTMTagger, self).__init__()
         self.hidden_dim = hidden_dim

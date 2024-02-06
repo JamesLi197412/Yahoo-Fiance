@@ -129,7 +129,6 @@ class Exploration:
     #  Trend Stationary -- A time series that does not show a trend
     # Seasonal Stationary -- A time series that does not show seasonal changes
     # Strictly Stationary -- The joint distribution of observations is invariant to time shift.
-
     def check_adfuller(self,ts):
         """
             Augmented Dickey - Fuller test is a type of statistical test called a unit root test, which determines how strongly a time series is defined by a trend.
@@ -179,12 +178,12 @@ class Exploration:
     def autocorrelation_correlation(self,df,col):
         # Autocorrelation to check seasonality
         plt.rcParams.update({'figure.figsize': (9, 5), 'figure.dpi': 120})
-        autocorrelation_plot(df['Moving AverageTotal Attendance30'])
+        autocorrelation_plot(df[col])
         plt.title('Autocorrelation', fontsize=16)
         plt.plot()
 
-        plot_acf(df['Moving AverageTotal Attendance30'], ax=plt.gca(), lags=150)
+        plot_acf(df[col], ax=plt.gca(), lags=150)
         plt.show()
 
-        plot_pacf(df['Moving AverageTotal Attendance30'], ax=plt.gca(), lags=100)
+        plot_pacf(df[col], ax=plt.gca(), lags=100)
         plt.show()
