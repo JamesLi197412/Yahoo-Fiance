@@ -4,22 +4,36 @@ from exploration import Exploration
 import warnings
 import pandas as pd
 
+import matplotlib
+matplotlib.use('TkAgg')
+import matplotlib.pyplot as plt
+
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 def main(stockList):
     # create ticker for Apple Stock
-
-    dfexploration = Exploration()
-
     ticker = yf.Ticker('AAPL')
     df = ticker.history(period='3Y')
 
-    dfexploration.df_exploration(df)
-    # columns = df.columns
-
+    # Call the Object
+    dfexploration = Exploration()
+    # Data Process
     df = dfexploration.date_info(df)
-    df = dfexploration.window_Lag(df,7) # set 7 days as window size
-    print(df.head())
+    window_lag = 7
+    # Columns : Close', 'High', 'Low', 'Open', 'Volume', 'Dividends', 'Stock Splits',
+    #        'Date', 'month', 'week', 'day', 'day_of_week'
+    features = ['Close','High','Low','Open','Volume']
+
+    # df['Close'].diff().fillna(0).plot()
+
+    dfexploration.plot_df(df,df['Date'],features, xlabel = 'Date',dpi = 100)
+    #for feature in features:
+    #    dfexploration.plot_df(df,df['Date'],df[feature],title=feature + ' in days',xlabel='Date',ylabel='Values',dpi = 100)
+
+    # Export the Decoposition figure to the output folder
+#    dfexploration.decomposition(df, 'Low', window_lag)
+
+
 
 
 # Press the green button in the gutter to run the script.

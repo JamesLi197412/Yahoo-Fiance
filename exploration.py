@@ -1,12 +1,15 @@
 import numpy as np
 import pandas as pd
+
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
-import statsmodels.api as sm
 from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.tsa.stattools import adfuller
 from statsmodels.graphics.tsaplots import plot_pacf
 from statsmodels.graphics.tsaplots import plot_acf
+from pandas.plotting import autocorrelation_plot
 
 class Exploration:
     def df_exploration(self, df):
@@ -43,6 +46,11 @@ class Exploration:
             print("=" * 50)
 
     def date_info(self,df):
+        """
+            Add month, week, day and day of week features in prepartion for model
+        :param df: Signal
+        :return: Signal with date features
+        """
         df['Date'] = df.index
         df.Date = pd.to_datetime(df.Date, format = "%Y-%m-%d")
         df['month'] = df.Date.dt.month
@@ -70,13 +78,40 @@ class Exploration:
 
         return df
 
-    def plot_df(df, x, y, title="", xlabel='Date', ylabel='Values', dpi=100):
-        plt.figure(figsize=(15, 4), dpi=dpi)
-        plt.plot(x, y, color='tab:red')
-        plt.gca().set(title=title, xlabel=xlabel, ylabel=ylabel)
+    # Moving average for 7
+    def moving_average(self,data, window, attribute):
+        data['Moving Average' + attribute + ' ' + str(window)] = data[attribute].rolling(window).mean()
+        actual = data[attribute][-(window + 7):]
+        ma = data['Moving Average' + attribute + str(window)][-(window + 7):]
+
+        plt.figure(figsize=(20, 8))
+        actual.plot(label='Actual', lw=4)
+        ma.plot(label='MA-{}'.format(str(window)), ls='--', lw=2)
+        plt.title('{}-Days Moving Average'.format(str(window)), weight='bold', fontsize=25)
+        plt.legend()
+
+    # Time series plot by attributes
+    def plot_df(self,df, x,features,xlabel, dpi):
+        loop = len(features)
+        fig, axes = plt.subplots(nrows = loop, ncols = 1, figsize = (20,15), dpi = dpi)
+        fig.suptitle('Stock Price Features in time domain')
+        for i in range(loop):
+            y = df[features[i]]
+            axes[i].plot(x, y, color='tab:red')
+            axes[i].set(xlabel = xlabel, ylabel = features[i])
+
+        fig.tight_layout()
         plt.show()
+        plt.savefig('output/Stock Signal Features.png')
 
     def decomposition(self,df,yValue, windowSize):
+        """
+           Time series data decompostion to visualise its trend, seasonal, Residuals
+        :param df: Signals
+        :param yValue: stock values
+        :param windowSize: period
+        :return:
+        """
         # Multiplicative Decomposition
         df = df.dropna()
         multiplicative_decomposition = seasonal_decompose(df[yValue],model='multiplicative',period=windowSize)
@@ -119,14 +154,12 @@ class Exploration:
         return assumes
 
 
-    def autocorrelation_correlation(self,df):
+    def autocorrelation_correlation(self,df,col):
         # Autocorrelation to check seasonality
-        from pandas.plotting import autocorrelation_plot
         plt.rcParams.update({'figure.figsize': (9, 5), 'figure.dpi': 120})
         autocorrelation_plot(df['Moving AverageTotal Attendance30'])
         plt.title('Autocorrelation', fontsize=16)
         plt.plot()
-
 
         plot_acf(df['Moving AverageTotal Attendance30'], ax=plt.gca(), lags=150)
         plt.show()
