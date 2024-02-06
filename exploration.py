@@ -53,13 +53,13 @@ class Exploration:
         """
         df['Date'] = df.index
         df.Date = pd.to_datetime(df.Date, format = "%Y-%m-%d")
+        df = df.set_index(df['Date'])
         df['month'] = df.Date.dt.month
         df['week'] = df.Date.dt.week
         df['day'] = df.Date.dt.day
         df["day_of_week"] = df.Date.dt.dayofweek
 
         return df
-
 
     def window_Lag(self,df,windowSize,features):
         dfRolledLags =df[features].rolling(window = windowSize, min_periods = 0)
@@ -126,7 +126,32 @@ class Exploration:
         plt.show()
 
 
+    #  Trend Stationary -- A time series that does not show a trend
+    # Seasonal Stationary -- A time series that does not show seasonal changes
+    # Strictly Stationary -- The joint distribution of observations is invariant to time shift.
+
     def check_adfuller(self,ts):
+        """
+            Augmented Dickey - Fuller test is a type of statistical test called a unit root test, which determines how strongly a time series is defined by a trend.
+            The null hypothesis of the test is that the time series can be represented by a unit root, that it is not stationary(has some time-dependent structure). The alternatvie hypothesis (rejecting the nul hypothesis) is that the  time series is stationary.
+            1. Null Hypothesis (H0): If failed to be rejected, it suggests the time series has a unit root, meaning it is non-sataionary.
+            2. Alternative Hypothesis(H1): The null hypothesis is rejected; it suggestes the time series does not have a unit root.
+
+            based on its AFD test and p value to judge its stationary or not,
+            Conditions:
+            a)     if p <= 0.05, then reject the null hypothesis --> The signal is stationary.
+            b)     ADF statistics value higher than any critical values
+
+            ADF Statistic: The more negative of test statistic value, the more likely we are to reject the null hypothesis.
+
+            IF ADF Statistics value is less than the value of 1% value from Critical Values, then it suggests that we can reject the null hypothesis with a significance level of less than 1%(i.e. aa low probability that the result is a statistical fluke)
+
+            Rejecting the null hypothesis means that the process has no unit, and in turn that the time series is stationary or does not have time-dependent structure.
+
+            IF ADF Statistics Test is higher than any critical values, it means that we can fail to reject the null hypothesis and in turn that the time series is non-stationary.
+        :param ts:
+        :return: ADF Test Result
+        """
         # Dickey-Fuller test
         result = adfuller(ts, autolag='AIC')
         print('Test statistic: ', result[0])
@@ -135,19 +160,19 @@ class Exploration:
 
         return result
 
-    def test_stationarity(self,df,ylabel):
+    def test_stationarity(self,ts,ylabel):
         """
-            Used to Test signal staionary or not
+            Present the ADF Test Result so that checking signal stationary or not
             Augmented Dickey-Fuller test
         :param df:
         :return:
         """
-        ts = df.loc[:, ["Date",ylabel]]
+
         results = self.check_adfuller(ts)
-        if (results[0] < 0.1 and results[1] < 0.5):
-            assumes = 'non-stationary'
+        if (results[0] > results[4]['1%'] and results[1] < 0.5):
+            assumes = 'Not Stationary'
         else:
-            assumes = 'stationary'
+            assumes = 'Stationary'
         return assumes
 
 

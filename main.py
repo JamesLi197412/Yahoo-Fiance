@@ -3,6 +3,7 @@ import yfinance as yf
 from exploration import Exploration
 import warnings
 import pandas as pd
+from model.model_test import LSTMTagger
 
 import matplotlib
 matplotlib.use('TkAgg')
@@ -17,20 +18,29 @@ def main(stockList):
 
     # Call the Object
     dfexploration = Exploration()
-    # Data Process
-    #df = dfexploration.date_info(df)
     window_lag = 7
     # Columns : Close', 'High', 'Low', 'Open', 'Volume', 'Dividends', 'Stock Splits',
     #        'Date', 'month', 'week', 'day', 'day_of_week'
     features = ['Close','High','Low','Open','Volume']
 
+    # df = dfexploration.window_Lag(df,7,features)
+
+    df = dfexploration.date_info(df)
+
     #dfexploration.plot_df(df,df['Date'],features, xlabel = 'Date',dpi = 100)
     # Export the Decomposition figure to the output folder
     #dfexploration.decomposition(df, 'Low', window_lag)
 
-    df = dfexploration.window_Lag(df,7,features)
-
     # Go Check signal stationary or not
+    ts = df.loc[:,['Close']].copy(deep = True)
+    ts = ts.dropna()
+    #ts.index = ts.Date
+    #ts = ts.drop("Date", axis = 1)
+    # dfexploration.check_adfuller(ts)
+    result = dfexploration.test_stationarity(ts,'Close')
+    print(f'This Signal is {result}.')
+
+
 
 
 
