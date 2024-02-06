@@ -18,20 +18,20 @@ def main(stockList):
     # Call the Object
     dfexploration = Exploration()
     # Data Process
-    df = dfexploration.date_info(df)
+    #df = dfexploration.date_info(df)
     window_lag = 7
     # Columns : Close', 'High', 'Low', 'Open', 'Volume', 'Dividends', 'Stock Splits',
     #        'Date', 'month', 'week', 'day', 'day_of_week'
     features = ['Close','High','Low','Open','Volume']
 
-    # df['Close'].diff().fillna(0).plot()
+    #dfexploration.plot_df(df,df['Date'],features, xlabel = 'Date',dpi = 100)
+    # Export the Decomposition figure to the output folder
+    #dfexploration.decomposition(df, 'Low', window_lag)
 
-    dfexploration.plot_df(df,df['Date'],features, xlabel = 'Date',dpi = 100)
-    #for feature in features:
-    #    dfexploration.plot_df(df,df['Date'],df[feature],title=feature + ' in days',xlabel='Date',ylabel='Values',dpi = 100)
+    df = dfexploration.window_Lag(df,7,features)
 
-    # Export the Decoposition figure to the output folder
-#    dfexploration.decomposition(df, 'Low', window_lag)
+    # Go Check signal stationary or not
+
 
 
 

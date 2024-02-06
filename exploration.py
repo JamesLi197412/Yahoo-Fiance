@@ -61,21 +61,16 @@ class Exploration:
         return df
 
 
-    def window_Lag(self,df,windowSize):
-        lag_features = ['Open','High','Low','Close','Volume']
-        dfRolledLags =df[lag_features].rolling(window = windowSize, min_periods = 0)
+    def window_Lag(self,df,windowSize,features):
+        dfRolledLags =df[features].rolling(window = windowSize, min_periods = 0)
 
-        dfMeanLags = dfRolledLags.mean().shift(1).reset_index().astype(np.float32)
-        dfStdLags = dfRolledLags.std().shift(1).reset_index().astype(np.float32)
-
-        for feature in lag_features:
+        dfMeanLags = dfRolledLags.mean().shift(1).reset_index()
+        dfStdLags = dfRolledLags.std().shift(1).reset_index()
+        for feature in features:
             df[f"{feature}_mean_lag{windowSize}"] = dfMeanLags[feature]
             df[f"{feature}_std_lag{windowSize}"] = dfStdLags[feature]
 
         df.fillna(df.mean(), inplace = True)
-        df.set_index("Date", drop = False, inplace = True)
-        # df.head()
-
         return df
 
     # Moving average for 7
@@ -93,7 +88,7 @@ class Exploration:
     # Time series plot by attributes
     def plot_df(self,df, x,features,xlabel, dpi):
         loop = len(features)
-        fig, axes = plt.subplots(nrows = loop, ncols = 1, figsize = (20,15), dpi = dpi)
+        fig, axes = plt.subplots(nrows = loop, ncols = 1, figsize = (200,150), dpi = dpi)
         fig.suptitle('Stock Price Features in time domain')
         for i in range(loop):
             y = df[features[i]]
@@ -123,9 +118,11 @@ class Exploration:
         plt.rcParams.update({'figure.figsize': (16, 12)})
         multiplicative_decomposition.plot().suptitle('Multiplicative Decomposition', fontsize=16)
         plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+        plt.savefig('output/Multiplicative Decomposition.png')
 
         additive_decomposition.plot().suptitle('Additive Decomposition', fontsize=16)
         plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+        plt.savefig('output/Additive Decomposition.png')
         plt.show()
 
 
