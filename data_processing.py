@@ -22,13 +22,12 @@ def data_processing(brandList, starttime,endtime,split_ratio,step, features):
     X_train, y_train =  create_dataset(train_df,step,features[0])
     X_test, y_test = create_dataset(test_df, step, features[0])
 
-    #forecast(X_train,y_train,X_test,y_test, step,train_size,data)
-
-
-    return X_train, y_train, X_test, y_test, train_size,
+    return X_train, y_train, X_test, y_test, train_size
 
 
 def data_collection(brandList, starttime, endtime):
+    # Yahoo API https://medium.com/@kasperjuunge/yfinance-10-ways-to-get-stock-data-with-python-6677f49e8282
+    # https://www.geeksforgeeks.org/get-financial-data-from-yahoo-finance-with-python/
     try:
         #ticker = yf.Ticker('AAPL')
         #df = ticker.history(period = '3Y')
