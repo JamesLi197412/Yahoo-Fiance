@@ -1,8 +1,4 @@
-import datetime
 import yfinance as yf
-from exploration import Exploration
-import warnings
-import pandas as pd
 from model.LSTM import StockLSTM
 
 import matplotlib
@@ -16,22 +12,40 @@ import torch.optim as optim
 import torch.utils.data as data
 import torch.nn as nn
 
+def data_processing(brandList, starttime,endtime,split_ratio,step, features):
+    data = data_collection(brandList, starttime, endtime)
+
+    # Split the data into train & test
+    train_df, test_df, train_size = split_data(data,split_ratio)
+
+    # Generate Dataset
+    X_train, y_train =  create_dataset(train_df,step,features[0])
+    X_test, y_test = create_dataset(test_df, step, features[0])
+
+    #forecast(X_train,y_train,X_test,y_test, step,train_size,data)
 
 
-def data_collection():
-    ticker = yf.Ticker('AAPL')
-    df = ticker.history(period = '3Y')
-    return df
+    return X_train, y_train, X_test, y_test, train_size,
 
-def split_data(df):
-    train_size = int(len(df) * 0.8)
+
+def data_collection(brandList, starttime, endtime):
+    try:
+        #ticker = yf.Ticker('AAPL')
+        #df = ticker.history(period = '3Y')
+        data = yf.download(brandList, start = starttime, end = endtime)
+    except Exception as e:
+        print(f"Error:{e}")
+    return data
+
+def split_data(df,ratio):
+    train_size = int(len(df) * ratio)
     test_size = len(df) - train_size
 
     train,test = df[:train_size], df[train_size :]
-    return train, test
+    return train, test, train_size
 
-def create_dataset(df,lookback):
-    df = df[['Close']].values
+def create_dataset(df,lookback, attribute):
+    df = df[[attribute]].values
     X, y = [], []
     for i in range(len(df) - lookback):
         feature = df[i:i+lookback]
@@ -44,17 +58,7 @@ def create_dataset(df,lookback):
 
 
 
-def forecast():
-    df = data_collection()
-    ts = df.loc[:, ['Close']].copy(deep=True)
-    ts = ts.dropna()
-    train_size = int(len(ts) * 0.8)
-
-    lookback = 7
-    train, test = split_data(ts)
-    X_train, y_train = create_dataset(train, lookback = lookback)
-    X_test, y_test = create_dataset(test, lookback = lookback)
-
+def forecast(X_train,y_train,X_test,y_test, lookback,train_size,ts):
     print('Start Forecasting')
 
     model = StockLSTM()
@@ -95,7 +99,7 @@ def forecast():
         test_plot[train_size + lookback:len(ts)] = model(X_test)[:, -1, :]
 
     # plot
-    plt.plot(df)
+    plt.plot(ts)
     plt.plot(train_plot, c='r')
     plt.plot(test_plot, c='g')
     plt.show()
