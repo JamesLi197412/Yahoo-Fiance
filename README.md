@@ -10,7 +10,7 @@ In addition, Time series models utlised to predict future stock value, because t
 
 ### Get Started 
 #### Data Input (Data Collection)
-* Get Data from Yahoo API
+* Fetch Data from Yahoo API
 
 ## Getting Started
 Requires:
