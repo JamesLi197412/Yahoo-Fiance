@@ -47,6 +47,7 @@ Say what the step will be
 ```
  
 ### Time Series Analysis
+exploration.py contains class Exploration which includes method used to  
 
 
 ### Forecast Model
