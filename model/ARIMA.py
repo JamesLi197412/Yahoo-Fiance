@@ -1,8 +1,8 @@
-from data_processing import data_collection
-import pandas as pd
-from statsmodels.tsa.arima_model import ARIMA
+from analysis.data_processing import data_collection
 import statsmodels.api as sm
 from pandas.tseries.offsets import DateOffset
+import pandas as pd
+from statsmodels.tsa.arima_model import ARIMA
 
 # For non-seasonal data
 def arima(p,q,d,attribute):

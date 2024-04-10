@@ -1,21 +1,16 @@
-import datetime
 import yfinance as yf
-from exploration import Exploration
+from analysis.data_exploration import Exploration
 import warnings
-import pandas as pd
-from model.LSTM import StockLSTM
 
 import matplotlib
 matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
 
+# Define Global Parameters
+NUM_DAYS = 10000
+INTERVAL = '1d'
 
-import numpy as np
-import torch
-import torch.optim as optim
-import torch.utils.data as data
-import torch.nn as nn
-
+# List of Stock Companys
+STOCK_COMPANY = ['SPY','AAPL','AMD','NVDA']
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
