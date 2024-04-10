@@ -4,6 +4,72 @@ from pandas.tseries.offsets import DateOffset
 import pandas as pd
 from statsmodels.tsa.arima_model import ARIMA
 
+class ARIMA_Model:
+  def __init__(self, data, order=(p, q, d)):
+    self.data = data
+    self.order = order
+    self.model = None
+
+  def _check_model_built(self):
+    if self.model is None:
+      raise Exception("Model not yet built. Please call build_model() first.")
+
+  def build_model(self):
+    """
+    Builds and fits an ARIMA model to the data.
+    """
+    self.model = ARIMA(self.data, order=self.order)
+    self.model = self.model.fit()
+
+  def forecast(self, steps):
+    """
+    Generates forecasts for the given number of steps using the fitted model.
+    steps (int): The number of steps to forecast.
+    """
+
+    self._check_model_built()
+    forecast_values = self.model.forecast(steps=steps)
+    return forecast_values
+
+  def evaluate(self, metric):
+    """
+    Evaluates the fitted model using a specified metric.
+
+    Args:
+        metric (callable): A function that takes the actual and forecast values as arguments
+                             and returns a performance metric.
+
+    Returns:
+        float: The evaluation metric score.
+    """
+
+    self._check_model_built()
+    # Implement logic to calculate the chosen metric here (e.g., RMSE, MAE)
+    # This example uses a placeholder function
+    return metric(self.data, self.model.forecast(steps=len(self.data)))
+
+
+def arima_execute(data):
+    order = (1,2,1)
+    model = ARIMA_Model(data,order = order)
+    model.build_model()
+    print(model.model.summary())  # Print model summary
+
+    forecast_steps = 10
+    forecasts = model.forecast(forecast_steps)
+
+    # Plot actual data and forecasts
+    data.plot(label="Actual")
+    forecasts.plot(label=f"Forecast ({forecast_steps} steps)")
+
+# Example evaluation (replace with your desired metric function)
+def mean_squared_error(actual, forecast):
+  return ((actual - forecast) ** 2).mean()
+
+evaluation_score = model.evaluate(mean_squared_error)
+print(f"Evaluation Score (MSE): {evaluation_score}")
+
+
 # For non-seasonal data
 def arima(p,q,d,attribute):
     #p=1, d=1, q=0 or 1

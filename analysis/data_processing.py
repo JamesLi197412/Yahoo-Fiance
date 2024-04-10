@@ -1,16 +1,16 @@
 import yfinance as yf
 from model.LSTM import StockLSTM
-
+from data.data_collect import data_collection
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-
-
 import numpy as np
 import torch
 import torch.optim as optim
 import torch.utils.data as data
 import torch.nn as nn
+
+
 
 def data_processing(brandList, starttime,endtime,split_ratio,step, features):
     data = data_collection(brandList, starttime, endtime)
@@ -23,18 +23,6 @@ def data_processing(brandList, starttime,endtime,split_ratio,step, features):
     X_test, y_test = create_dataset(test_df, step, features[0])
 
     return X_train, y_train, X_test, y_test, train_size
-
-
-def data_collection(brandList, starttime, endtime):
-    # Yahoo API https://medium.com/@kasperjuunge/yfinance-10-ways-to-get-stock-data-with-python-6677f49e8282
-    # https://www.geeksforgeeks.org/get-financial-data-from-yahoo-finance-with-python/
-    try:
-        #ticker = yf.Ticker('AAPL')
-        #df = ticker.history(period = '3Y')
-        data = yf.download(brandList, start = starttime, end = endtime)
-    except Exception as e:
-        print(f"Error:{e}")
-    return data
 
 def split_data(df,ratio):
     train_size = int(len(df) * ratio)
