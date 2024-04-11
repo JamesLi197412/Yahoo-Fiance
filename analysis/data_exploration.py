@@ -117,11 +117,11 @@ class Exploration:
         plt.rcParams.update({'figure.figsize': (16, 12)})
         multiplicative_decomposition.plot().suptitle('Multiplicative Decomposition', fontsize=16)
         plt.tight_layout(rect=[0, 0.03, 1, 0.95])
-        plt.savefig('output/Multiplicative Decomposition.png')
+        plt.savefig('output/visualisations/Multiplicative Decomposition.png')
 
         additive_decomposition.plot().suptitle('Additive Decomposition', fontsize=16)
         plt.tight_layout(rect=[0, 0.03, 1, 0.95])
-        plt.savefig('output/Additive Decomposition.png')
+        plt.savefig('output/visualisation/Additive Decomposition.png')
         plt.show()
 
 

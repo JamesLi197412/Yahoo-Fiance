@@ -9,19 +9,12 @@ class StockForecaster:
   for stock price forecasting.
   """
 
-  def __init__(self, data_path):
-    self.data_path = data_path
+  def __init__(self):
     self.data = None
     self.features = None
     self.target = None
     self.model = None
 
-  def load_data(self):
-    """
-    Loads stock time series data from a CSV file.
-    """
-
-    self.data = pd.read_csv(self.data_path, index_col="date", parse_dates=True)
 
   def preprocess_data(self, target_col="Close"):
     """

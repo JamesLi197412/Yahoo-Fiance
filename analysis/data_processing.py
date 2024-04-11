@@ -11,6 +11,20 @@ import torch.utils.data as data
 import torch.nn as nn
 
 
+def feature_engineering(df,window_size):
+    df['gap'] = df['high'] - df['low']
+    df['buying pressure'] = np.where(df['open'] > df['close'], 1,0)
+
+    # find out monthly weekly Volumn and conduct comparison
+
+    # Utilise moving average to conduct Trend analysis
+
+    return df
+
+
+def monthly_aggregated(df):
+    return df
+
 
 def data_processing(brandList, starttime,endtime,split_ratio,step, features):
     data = data_collection(brandList, starttime, endtime)
@@ -42,8 +56,6 @@ def create_dataset(df,lookback, attribute):
 
     #return X,y
     return torch.Tensor(X),torch.Tensor(y)
-
-
 
 def forecast(X_train,y_train,X_test,y_test, lookback,train_size,ts):
     print('Start Forecasting')
