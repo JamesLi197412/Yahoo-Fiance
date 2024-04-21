@@ -1,6 +1,7 @@
 import yfinance as yf
 from model.LSTM import StockLSTM
 from data.data_collect import data_collection
+import pandas as pd
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
@@ -10,12 +11,20 @@ import torch.optim as optim
 import torch.utils.data as data
 import torch.nn as nn
 
+import seaborn as sns
+
 
 def feature_engineering(df,window_size):
-    df['gap'] = df['high'] - df['low']
-    df['buying pressure'] = np.where(df['open'] > df['close'], 1,0)
+    df['Gap'] = df['High'] - df['Low']
+    df['Buying Pressure'] = np.where(df['Open'] > df['Close'], 1,0)
 
-    # find out monthly weekly Volumn and conduct comparison
+    # find out weekly Volume and conduct comparison
+    df_weekly_volume = df.groupby(['Ticker','year','month','week'])['Volume'].mean().reset_index()
+    #df_weekly_volume['Volume'] = df_weekly_volume['Volume'].fillna(0)
+    df_weekly_volume.rename(columns ={'Volume':'Weekly Average Volume'},inplace = True)
+
+    df = pd.merge(df, df_weekly_volume, how = 'inner', on =['Ticker','year','month','week'])
+    df['Volume Gap(Positive)'] = np.where(df['Volume'] > df['Weekly Average Volume'],1,0)
 
     # Utilise moving average to conduct Trend analysis
 
@@ -23,10 +32,31 @@ def feature_engineering(df,window_size):
 
 
 def monthly_aggregated(df):
-    return df
+    monthly_data = df.groupby(['Ticker','year', 'month'])['Volume','Close'].mean().reset_index()
+    sorted_monthly_df = monthly_data.sort_values(by = ["year", "month"])
+    sorted_monthly_df['date'] = pd.to_datetime(sorted_monthly_df[['year', 'month']].assign(DAY=1))
+    print(sorted_monthly_df.head(10))
+    return sorted_monthly_df
 
+def monthly_plot(df):
+    monthly_data = monthly_aggregated(df)
+    sns.displot(data=monthly_data, x='Close',hue='Ticker', kde=True, bins=25, height=6, aspect=2.5).set(title='Stock closing prices (monthly avg)')
+    g = sns.relplot(data=monthly_data, x='date', y='Close', hue='Ticker', kind='line', height=6, aspect=2.5)
+    g.set(title='Stock closing prices (monthly avg)')
+    g.set(xticks=[])
+    plt.figure(figsize=(15, 7))
+    g = sns.barplot(data=monthly_data, x='date', y='Volume', hue = 'Ticker')
+    g.set(title='Stock volume (monthly avg) ')
+    for index, label in enumerate(g.get_xticklabels()):
+        if index % 24 == 0:
+            label.set_visible(True)
+        else:
+            label.set_visible(False)
+    g.tick_params(bottom=False)
+    g.plot()
+    plt.show()
 
-def data_processing(brandList, starttime,endtime,split_ratio,step, features):
+def data_preprocessing(brandList, starttime,endtime,split_ratio,step, features):
     data = data_collection(brandList, starttime, endtime)
 
     # Split the data into train & test

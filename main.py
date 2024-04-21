@@ -1,4 +1,3 @@
-
 from analysis.data_exploration import *
 from analysis.data_processing import *
 from data.data_collect import data_collection
@@ -38,21 +37,25 @@ def single_stock(stockList):
     #print(f'This Signal is {result}.')
     return None
 
-def stock_analysis(STOCK_COMPANYS,INTERVAL, NUM_DAYS, windows_lag):
-    # Generate an empty dataframe
-    columns_names = ['Open','High','Low','Close','Adj Close','Volumne']
-    stock_df = pd.DataFrame(columns = columns_names)
+def stock_analysis(STOCK_COMPANYS,INTERVAL,NUM_DAYS, windows_lag):
+    # Call API to gather Data
+    columns = ['Open','High','Close','Low','Adj Close','Ticker','Volume']
+    stock_df = data_collection(STOCK_COMPANYS,INTERVAL,NUM_DAYS,columns, windows_lag)
 
-    for stock in STOCK_COMPANYS:
-        data = data_collection(stock,INTERVAL,NUM_DAYS)
-        stock_df = pd.concat([stock_df, data], axis = 0)
+    # Time-Series Analysis
+    #exploration = Exploration()
+    #stock_df_add =  exploration.df_exploration(stock_df)  # DataFrame Exploration
+    test_df = feature_engineering(stock_df, window_size)
+    #monthly_df =  monthly_aggregated(stock_df_add)
+    #monthly_plot(stock_df_add)
+    # monthly_plot(stock_df_add)
+    # for feature in features:
+    test = ['Open','High','Close','Low','Adj Close']
+    # stock_df_window = exploration.window_Lag(stock_df_add, windows_lag, test)
 
-    exploration = Exploration()
-    stock_df_modi =  exploration.date_info(stock_df)
 
-    #stock_df_modi = feature_engineering(stock_df_modi, windows_lag)
 
-    return stock_df_modi
+    return test_df
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -60,9 +63,15 @@ if __name__ == '__main__':
     NUM_DAYS = 10000
     INTERVAL = '1d'
     windows_lag = 7
-    STOCK_COMPANYS = ['SPY', 'AAPL', 'AMD', 'NVDA']
+    window_size = 30
+    percentage_change = 0.1
 
+    STOCK_COMPANYS = ['SPY', 'AAPL', 'AMD', 'NVDA']
+    #STOCK_COMPANYS = ['AMD', 'NVDA']
     data = stock_analysis(STOCK_COMPANYS,NUM_DAYS, INTERVAL,windows_lag)
+
+    data.to_csv('test.csv')
+
 
 
 

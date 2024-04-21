@@ -53,6 +53,7 @@ class Exploration:
         df['Date'] = df.index
         df.Date = pd.to_datetime(df.Date, format = "%Y-%m-%d")
         df = df.set_index(df['Date'])
+        df['year'] = df.Date.dt.year
         df['month'] = df.Date.dt.month
         df['week'] = df.Date.dt.week
         df['day'] = df.Date.dt.day
