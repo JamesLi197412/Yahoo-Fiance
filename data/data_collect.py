@@ -13,8 +13,8 @@ def data_collection(STOCK_COMPANY, num_days, interval,features,windowSize):
     features =['Open','High','Close','Low','Adj Close','Volume']
     for stock in STOCK_COMPANY:
         data = single_stock_process(stock,start, end, interval,features,windowSize)
+        data['Ticker'] = stock
         df = pd.concat([df,data], axis = 0)
-        df['Ticker'] = stock
 
     # df.to_csv('test.csv')
     # data_quality_check(df)

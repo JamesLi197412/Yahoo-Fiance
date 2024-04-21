@@ -1,6 +1,4 @@
-import yfinance as yf
 from model.LSTM import StockLSTM
-from data.data_collect import data_collection
 import pandas as pd
 import matplotlib
 matplotlib.use('TkAgg')
@@ -10,7 +8,6 @@ import torch
 import torch.optim as optim
 import torch.utils.data as data
 import torch.nn as nn
-
 import seaborn as sns
 
 
@@ -20,13 +17,16 @@ def feature_engineering(df,window_size):
 
     # find out weekly Volume and conduct comparison
     df_weekly_volume = df.groupby(['Ticker','year','month','week'])['Volume'].mean().reset_index()
-    #df_weekly_volume['Volume'] = df_weekly_volume['Volume'].fillna(0)
     df_weekly_volume.rename(columns ={'Volume':'Weekly Average Volume'},inplace = True)
 
     df = pd.merge(df, df_weekly_volume, how = 'inner', on =['Ticker','year','month','week'])
     df['Volume Gap(Positive)'] = np.where(df['Volume'] > df['Weekly Average Volume'],1,0)
 
-    # Utilise moving average to conduct Trend analysis
+    # Utilise moving average to conduct Trend analysis ( Adj Close)
+    # Current Value > Previous Value, Positive, else Negative
+    df['Adj Close Comp'] = df[f"Adj Close_mean_lag_{window_size}"].diff()
+    df['Adj Close Comp'] = df['Adj Close Comp'].fillna(0)
+    df['Adj Close Indicator'] = np.where(df['Adj Close Comp']>= 0, 1,0)
 
     return df
 
@@ -56,9 +56,7 @@ def monthly_plot(df):
     g.plot()
     plt.show()
 
-def data_preprocessing(brandList, starttime,endtime,split_ratio,step, features):
-    data = data_collection(brandList, starttime, endtime)
-
+def data_preprocessing(split_ratio,step, features):
     # Split the data into train & test
     train_df, test_df, train_size = split_data(data,split_ratio)
 
