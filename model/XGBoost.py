@@ -6,6 +6,8 @@ import xgboost as xgb
 from sklearn.model_selection import train_test_split,GridSearchCV
 from xgboost import plot_importance,plot_tree
 
+# XGBoost can perform well when dealing with non-linear relationships and interactions among variables.
+
 
 class StockForecaster:
   """
@@ -58,7 +60,8 @@ class StockForecaster:
     model = xgb.XGBRegressor(**clf.best_params_, objective = 'reg:squarederror')
     model.fit(X_train,y_train, eval_set = eval_set, verbose = False)
 
-    print(plot_importance(model))
+    plot_importance(model)
+
 
     y_pred = model.predict(X_test)
     print(f'y_true = {np.array(y_test)[:5]}')
