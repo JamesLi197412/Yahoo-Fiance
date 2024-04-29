@@ -11,7 +11,7 @@ In addition, Time series models utlised to predict future stock value, because t
 ### Diagram
 
 ```mermaid
-graph LR
+flowchart LR
 Fetch Data FROM yfinance [Hard edge] --> Data Exploration/Visualisation [Hard edge]
     Data Exploration/Visualisation [Hard edge] --> Feature Engineering (Round edge)
     Feature Engineering (Round edge) --> Prediction Model Comparison {Decision}
