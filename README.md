@@ -12,9 +12,7 @@ In addition, Time series models utlised to predict future stock value, because t
 
 ```mermaid
 flowchart LR
-    id1(Call API to gather stock intel) --> id2[Data Exploration/Visualisation] 
-    id2[Data Exploration/Visualisation]  -- > id3[time series analysis]  
-    id3[time series analysis]  -- > id4[Prediction]  
+    id1(Call API to gather stock intel) --> id2[Data Exploration/Visualisation] -- > id3[time series analysis]  
 
 ```
 
