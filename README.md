@@ -12,11 +12,12 @@ In addition, Time series models utlised to predict future stock value, because t
 
 ```mermaid
 graph LR
-Fetch from Yahoo API[Hard edge] -->B(Data Visualisation & Exploration)
-    B --> C{Prediction Model}
-    C -->|LSTM| D[Result one]
-    C -->|ARIMA| E[Result two]
-    F -->|XGBoost| G[Result three]
+Fetch Data FROM yfinance [Hard edge] --> Data Exploration/Visualisation [Hard edge]
+    Data Exploration/Visualisation [Hard edge] --> Feature Engineering (Round edge)
+    Feature Engineering (Round edge) --> Prediction Model Comparison {Decision}
+    Prediction Model Comparison {Decision} -->|One| ARIMA[Result one]
+    Prediction Model Comparison {Decision} -->|two| LSTM [Result two]
+    Prediction Model Comparison {Decision} -->|three| XGBoost[Result three]
 ```
 
 ## Getting Started
@@ -43,26 +44,16 @@ Say what the step will be
 ```
  git clone https://github.com/JamesLi197412/Yahoo-Fiance.git
 ```
- 
-### Time Series Analysis
-exploration.py contains class Exploration which includes method used to  
-
 
 ### Forecast Model
 ##### ARIMA
+ ARIMA models are effective for capturing linear trends and seasonal patterns.
 
 #### LSTM
+LSTM models tends to perform well on time series data with complex patterns and long-term dependencies.
 
 
-
-## Versioning
-
-Github/Git are used for versioning/sharing. 
 
 ## Authors
 
 * **James Li** 
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
