@@ -8,20 +8,18 @@ In this repo, I would love to have practical experience on time-series analysis.
 In addition, Time series models utlised to predict future stock value, because they could recognize the trend and seasonality from the existing observatiosn (the past information) and then forecast a value based on its trend and seasonlity.
 
 
-### Get Started 
-#### Data Input (Data Collection)
-* Fetch Data from Yahoo API
+### Diagram
+
+```mermaid
+graph LR
+Fetch from Yahoo API[Hard edge] -->B(Data Visualisation & Exploration)
+    B --> C{Prediction Model}
+    C -->|LSTM| D[Result one]
+    C -->|ARIMA| E[Result two]
+    F -->|XGBoost| G[Result three]
+```
 
 ## Getting Started
-Requires:
-* Python 3.8.8
-* pandas 
-* numpy
-* yfinance
-* datetime
-* matplotlib
-* torch
-* statsmodels
 
 ### Prerequisites
 

@@ -1,4 +1,4 @@
-from model.LSTM import StockLSTM
+
 import pandas as pd
 import matplotlib
 matplotlib.use('TkAgg')
@@ -87,7 +87,7 @@ def create_dataset(df,lookback, attribute):
 
 def forecast(X_train,y_train,X_test,y_test, lookback,train_size,ts):
     print('Start Forecasting')
-
+    """
     model = StockLSTM()
     optimizer = optim.Adam(model.parameters())
     loss_fn = nn.MSELoss()
@@ -130,6 +130,7 @@ def forecast(X_train,y_train,X_test,y_test, lookback,train_size,ts):
     plt.plot(train_plot, c='r')
     plt.plot(test_plot, c='g')
     plt.show()
+    """
 
 
 

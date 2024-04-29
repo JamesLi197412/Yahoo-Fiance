@@ -1,16 +1,14 @@
 from analysis.data_exploration import *
-from model.ARIMA import *
 from analysis.data_processing import *
 from data.data_collect import data_collection
 import warnings
 import matplotlib
-import pandas as pd
 matplotlib.use('TkAgg')
 warnings.simplefilter(action='ignore', category=FutureWarning)
 from model.XGBoost import *
-#from model.LSTM import *
-#from model.ARIMA import *
-import xgboost as xgb
+from model.LSTM import *
+from model.ARIMA import *
+
 
 
 def arima_operation(df,attribute):
@@ -35,15 +33,21 @@ def lstm_operation(df,parameters):
     features_col = [ 'Gap', 'Buying Pressure', 'Volume Gap(Positive)','Adj Close Indicator']
 
 
-    for ticker in STOCK_COMPANYS:
-        ticker_df = df[(df["Ticker"] == ticker)].copy(deep = True)
-        xgb.set_config(verbosity=0)
-        xgboost_model = StockForecaster(ticker_df,features_col,'Close',parameters,cols_drop)
-        xgboost_result = xgboost_model.model_run()
-    return xgboost_result
+    #for ticker in STOCK_COMPANYS:
+    #    ticker_df = df[(df["Ticker"] == ticker)].copy(deep = True)
+    #    xgb.set_config(verbosity=0)
+    #    xgboost_model = StockForecaster(ticker_df,features_col,'Close',parameters,cols_drop)
+    #    xgboost_result = xgboost_model.model_run()
+    return df
 
 def xgboost_operation(df,attribute):
-    return None
+    ts = df.copy()
+    ts.index = ts['Date']
+    ts = ts.loc[:, [attribute]].copy(deep=True)
+    ts = ts.fillna(0)
+    xgboost_model = LSTM_Model(ts)
+    xgboost_prediction = xgboost_model.run()
+    return xgboost_prediction
 
 
 def stock_analysis(STOCK_COMPANYS,INTERVAL,NUM_DAYS, windows_lag,window_size):
@@ -69,11 +73,11 @@ def stock_analysis(STOCK_COMPANYS,INTERVAL,NUM_DAYS, windows_lag,window_size):
         'gamma': [0.001, 0.005, 0.01, 0.02],
         'random_state': [42]
     }
-    #lstm_prediction = lstm_operation(stock_features_df,lstm_parameters)
-    xgboost_prediction = xgboost_operation(stock_features_df)
+    lstm_prediction = lstm_operation(stock_features_df,lstm_parameters)
+    xgboost_prediction = xgboost_operation(stock_features_df,'Close')
 
-    return arima_prediction,xgboost_operation
-#    return arima_prediction,lstm_prediction,xgboost_prediction
+    return arima_prediction,lstm_prediction,xgboost_prediction
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -86,8 +90,9 @@ if __name__ == '__main__':
 
     # STOCK_COMPANYS = ['SPY', 'AAPL', 'AMD', 'NVDA']
     STOCK_COMPANYS = ['SPY']
-    test = stock_analysis(STOCK_COMPANYS,NUM_DAYS, INTERVAL,windows_lag,window_size)
+    arima_prediction,lstm_prediction,xgboost_prediction = stock_analysis(STOCK_COMPANYS,NUM_DAYS, INTERVAL,windows_lag,window_size)
     #test.to_csv('test.csv')
+    print(xgboost_prediction)
 
 
 
