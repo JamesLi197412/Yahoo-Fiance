@@ -12,12 +12,8 @@ In addition, Time series models utlised to predict future stock value, because t
 
 ```mermaid
 flowchart LR
-Fetch Data FROM yfinance [Hard edge] --> Data Exploration/Visualisation [Hard edge]
-    Data Exploration/Visualisation [Hard edge] --> Feature Engineering (Round edge)
-    Feature Engineering (Round edge) --> Prediction Model Comparison {Decision}
-    Prediction Model Comparison {Decision} -->|One| ARIMA[Result one]
-    Prediction Model Comparison {Decision} -->|two| LSTM [Result two]
-    Prediction Model Comparison {Decision} -->|three| XGBoost[Result three]
+    id1(Call API to gather stock intel)
+
 ```
 
 ## Getting Started
