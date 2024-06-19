@@ -1,4 +1,4 @@
-import pandas as pd
+
 from xgboost import XGBRegressor
 from sklearn.metrics import mean_squared_error
 import numpy as np
@@ -6,14 +6,8 @@ import xgboost as xgb
 from sklearn.model_selection import train_test_split,GridSearchCV
 from xgboost import plot_importance,plot_tree
 
-# XGBoost can perform well when dealing with non-linear relationships and interactions among variables.
-
 
 class StockForecaster:
-  """
-  XGBoost model for stock price forecasting.
-  """
-
   def __init__(self,df,features,target_col,parms,drop_cols):
     self.data = df
     self.features = features

@@ -33,11 +33,11 @@ class ARIMA_Model:
           train,test,train_size = self.split_data(0.8)
           history = [x for x in train]
           predictions = list()
-          for t in range(len(test)):
+          for t in range(0,len(test)):
               yhat = self.build_model(history)
               predictions.append(yhat)
               obs = test[t]
-              history.append(obs)
+              predictions.append(obs)
 
           self.visulations(train_size,test,predictions)
           return predictions
@@ -51,3 +51,4 @@ class ARIMA_Model:
           plt.ylabel('Stock Price')
           plt.legend()
           plt.show()
+

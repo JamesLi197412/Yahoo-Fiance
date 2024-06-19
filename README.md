@@ -2,19 +2,22 @@
 
 ### Introduction
 
-In this repo, I would love to have practical experience on time-series analysis. One of the common example in time is Financial analysis, specfically stock analysis. exploration.py contains everything analyst could do on a time series dataset. 
+In this repo, I would love to have practical experience on time-series analysis. One of the common example in time is Financial analysis, specfically stock analysis. data_exploration.py contains everything analyst could do on a time series dataset, like window function, decomposition, adding features, etc. 
 
 
-In addition, Time series models utlised to predict future stock value, because they could recognize the trend and seasonality from the existing observatiosn (the past information) and then forecast a value based on its trend and seasonlity.
+In addition, three different Time series models are utilised to predict stock value in the future, because they could recognize the trend and seasonality from the existing observatiosn (the past information) and then forecast a value based on its features. 
+Later, three algorithms prediction are compared to see algorithms' feature and begin to know which algorithm could be better for different situations.
 
-
-### Diagram
-
+### Flow Diagram
 ```mermaid
-flowchart LR
-    id1(Call API to gather stock intel) --> id2[Data Exploration/Visualisation] -- > id3[time series analysis]  
-
+flowchart TD
+    A[Call APIs] -->|Get the Data| B(Data Exploration)
+    B --> C{Data Process -- time series, feature progress}
+    C -->|ARIM| D[prediction]
+    C -->|LSTM| E[prediction]
+    C -->|XGBoost| F[prediction]
 ```
+
 
 ## Getting Started
 
@@ -23,6 +26,8 @@ flowchart LR
 ```
     Tools Required:
     Visual Studio or Pycharm (Any IDE could run Python)
+    Please see requirements.txt (3rd-party packages)
+    
 ```
 
 ### Installing
@@ -41,15 +46,12 @@ Say what the step will be
  git clone https://github.com/JamesLi197412/Yahoo-Fiance.git
 ```
 
-### Forecast Model
-##### ARIMA
- ARIMA models are effective for capturing linear trends and seasonal patterns.
+#### Forecast Model
 
-#### LSTM
-LSTM models tends to perform well on time series data with complex patterns and long-term dependencies.
+* ARIMA models are effective for capturing linear trends and seasonal patterns.
+
+* LSTM models tends to perform well on time series data with complex patterns and long-term dependencies.
+
+* XGBoost can perform well when dealing with non-linear relationships and interactions among variables.
 
 
-
-## Authors
-
-* **James Li** 
